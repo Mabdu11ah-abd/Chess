@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="ChessGUI.Views.ChessBoardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ChessGUI.Views" 
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="500">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="color1" Color="{Binding CellEvenColor}"/>
+        <SolidColorBrush x:Key="color2" Color="{Binding CellOddColor}"/>
+    </UserControl.Resources>
+    <Grid>
+        <UniformGrid x:Name="GameBoard" Rows="8" Columns="8" >
+        
+        </UniformGrid>
+        <Canvas x:Name="PieceCanvas" MouseDown="">
+                        
+        </Canvas>
+
+    </Grid>
+</UserControl>

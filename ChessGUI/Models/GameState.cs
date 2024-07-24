@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChessGUI.Models
 {
-    internal class GameState
+    public class GameState
     {
     }
 }

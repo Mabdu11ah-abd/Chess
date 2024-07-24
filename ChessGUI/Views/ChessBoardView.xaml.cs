@@ -1,4 +1,5 @@
-﻿using ChessGUI.ViewModels;
+﻿using ChessGUI.Models;
+using ChessGUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,6 +29,7 @@ namespace ChessGUI.Views
 
             DataContext = new ChessBoardViewModel();
             drawBoard();
+        
         }
         private void drawBoard()
         {

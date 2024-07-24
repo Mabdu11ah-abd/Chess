@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,15 +24,28 @@ namespace ChessGUI.Views
     /// </summary>
     public partial class ChessBoardView : UserControl
     {
+        
+        ChessBoardViewModel vm = new();
         public ChessBoardView()
         {
             InitializeComponent();
-
-            DataContext = new ChessBoardViewModel();
-            drawBoard();
-        
+            DataContext = vm;
+            double size = GameBoard.Width / 8;
+            vm.SquareSize = size;
+            Console.WriteLine(GameBoard.Width + "GameBoardWidth " + size);
+            var image = new Image();
+            image.Source = Images.getImage(9);
+            image.Height = size;
+            image.Width = size;
+            image.Stretch = Stretch.Uniform;
+            Canvas.SetLeft(image, 10);
+            Canvas.SetTop(image, 10);
+            PieceCanvas.Children.Add(image);
+            DrawBoard();
+            
         }
-        private void drawBoard()
+        //Create 
+        private void DrawBoard()
         {
             var cellEven = this.Resources["color1"] as Brush;
             var cellOdd = this.Resources["color2"] as Brush;
@@ -57,7 +71,32 @@ namespace ChessGUI.Views
                 }
             }
         }
+        private void drawImage()
+        {
 
+        }
+        //manage left mouseEvents
+        private void PieceCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Point pos = e.GetPosition(PieceCanvas);
+
+            if (e.Source is Image image && PieceCanvas.CaptureMouse())
+                vm.manageMouse.OnMouseDown(pos, image);
+        }
+
+        private void PieceCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            vm.manageMouse.OnMouseMove(e.GetPosition(PieceCanvas));
+        }
+
+        private void PieceCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            (int, int) position = vm.getRowAndCol(e.GetPosition(PieceCanvas));
+            PieceCanvas.ReleaseMouseCapture();
+            vm.manageMouse.onMouseUp();
+        }
+
+        
     }
 
 }

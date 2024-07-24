@@ -14,11 +14,17 @@
     <UserControl.Resources>
         <SolidColorBrush x:Key="color1" Color="{Binding CellEvenColor}" />
         <SolidColorBrush x:Key="color2" Color="{Binding CellOddColor}" />
+        <Image x:Key="size" Width="{Binding SquareSize}" Height="{Binding SquareSize}"/>
+        
     </UserControl.Resources>
-
-    <Grid>
-        <UniformGrid x:Name="GameBoard" Rows="8" Columns="8">
-        </UniformGrid>
-        <Canvas x:Name="PieceCanvas" />
-    </Grid>
+    <Viewbox>
+        <Grid>
+            <UniformGrid x:Name="GameBoard" Rows="8" Columns="8" AllowDrop="true" Height="500" Width="500">
+            </UniformGrid>
+            <Canvas x:Name="PieceCanvas" 
+            MouseLeftButtonUp="PieceCanvas_MouseLeftButtonUp" 
+            MouseMove="PieceCanvas_MouseMove"
+            MouseLeftButtonDown="PieceCanvas_MouseLeftButtonDown"    />
+        </Grid>
+    </Viewbox>
 </UserControl>

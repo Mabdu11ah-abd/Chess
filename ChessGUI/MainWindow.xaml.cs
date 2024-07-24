@@ -1,4 +1,5 @@
-﻿using ChessGUI.ViewModels;
+﻿using ChessGUI.Models;
+using ChessGUI.ViewModels;
 using System.Diagnostics;
 using System.Text;
 using System.Windows;
@@ -20,6 +21,7 @@ namespace ChessGUI
     {
         public MainWindow()
         {
+            InitializeComponent();
             MainWindowViewModel vm = new MainWindowViewModel();
             DataContext = vm;
         }

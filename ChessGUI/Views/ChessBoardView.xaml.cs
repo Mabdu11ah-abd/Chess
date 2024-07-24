@@ -25,15 +25,15 @@ namespace ChessGUI.Views
         public ChessBoardView()
         {
             InitializeComponent();
-         
+
             DataContext = new ChessBoardViewModel();
             drawBoard();
         }
         private void drawBoard()
         {
             var cellEven = this.Resources["color1"] as Brush;
-            var cellOdd = this.Resources["color2"] as Brush;    
-              
+            var cellOdd = this.Resources["color2"] as Brush;
+
             for (int i = 0; i < 8; i++)
             {
                 for (global::System.Int32 j = 0; j < 8; j++)
@@ -45,7 +45,7 @@ namespace ChessGUI.Views
 
                     if (boardIndex % 2 == 0)
                     {
-                        GameBoard.Children.Add(new Border { Background = cellEven }); 
+                        GameBoard.Children.Add(new Border { Background = cellEven });
                     }
                     else
                     {
@@ -55,14 +55,7 @@ namespace ChessGUI.Views
                 }
             }
         }
-        private void drawOnCanvas()
-        {
 
-        }
-        private void startBoard()
-        {
-
-        }
     }
-    
+
 }

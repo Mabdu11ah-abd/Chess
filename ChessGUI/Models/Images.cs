@@ -10,10 +10,10 @@ namespace ChessGUI.Models
 {
     public static class Images
     {
-        static Dictionary<Pieces, ImageSource> pieceSources = new()
-        {
-             //white images 
-             {Pieces.white | Pieces.pawn , loadFromSource("Assets/white-pawn.png") },
+        public static Dictionary<int, ImageSource> pieceSources = new()
+        {   
+            //white images 
+             {Pieces.white | Pieces.pawn , loadFromSource("Assets\\white-pawn.png") },
              {Pieces.white | Pieces.knight, loadFromSource("Assets/white-knight.png") },
              {Pieces.white | Pieces.bishop, loadFromSource("Assets/white-bishop.png") },
              {Pieces.white | Pieces.rook, loadFromSource("Assets/white-rook.png") },
@@ -28,5 +28,6 @@ namespace ChessGUI.Models
         {
             return new BitmapImage(new Uri(source, UriKind.Relative));
         }
+        
     }
 }

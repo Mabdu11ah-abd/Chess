@@ -11,7 +11,7 @@ namespace ChessGUI.Models
     {
 
         public int[,] Squares = new int[8, 8];
-        public string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+        private string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         
         private Dictionary<char, int> FenToPiece = new()
         {
@@ -33,27 +33,27 @@ namespace ChessGUI.Models
 
         public void ReadFen(string FEN)
         {
-            int i = 0;
+            Console.WriteLine("Reading FEN");
+            int row = 0, col = 0;
             foreach (var character in FEN)
             {
-                if (i > 8)
-                    break;
-                for (global::System.Int32 j = 0; j < 8; j++)
+              if(character == '/')
                 {
-                    if (character == '/')
-                        break;
-
-                    Squares[i, j] = FenToPiece[character];
+                    col = 0;
+                    row++;
                 }
-                i++;
-            }
-            for (int j = 0; j < 8; j++)
-            {
-                for (global::System.Int32 k = 0; k < 8; k++)
+              else
                 {
-                    Console.Write(Squares[j, k] + " ");
+                    if(char.IsDigit(character))
+                    {
+                        col += (int)char.GetNumericValue(character);
+                    }
+                    else
+                    {
+                        Squares[row, col] = FenToPiece[character];
+                        col++;
+                    }
                 }
-                Console.WriteLine();
             }
         }   
         public void defaultStart()

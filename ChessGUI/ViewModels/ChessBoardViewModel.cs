@@ -22,12 +22,13 @@ namespace ChessGUI.ViewModels
         // objects of the class
         private readonly GameState gamestate;
         private readonly Move move;
-        private readonly Board board = new Board();
+        private readonly Board board = new();
         private double pieceSize { get; set; }
 
         //constructor
         public ChessBoardViewModel()
         {
+            Console.WriteLine("view model constructor called");
             CellEvenColor = Colors.PeachPuff;
             CellOddColor = Colors.Red;
             board.defaultStart();
@@ -74,7 +75,24 @@ namespace ChessGUI.ViewModels
         {
             ManageMouse.OnMouseMove(position);
         }
+        public Image setUpImage(int r, int c, out bool isPiece)
+        {
+            if (board.Squares[c, r] == 0)
+            { 
+                isPiece = false;
+                return   null;
+            }
+            Point coords = SnapToCenter(r, c);
+            Image image = new Image { Source = Images.getImage(board.Squares[c, r]) };
 
+            image.Width = squareSize;
+            image.Height = squareSize;
+            image.Stretch = Stretch.Uniform;
+            Canvas.SetLeft(image, coords.X);
+            Canvas.SetTop(image, coords.Y);
+            isPiece = true;
+            return image;
+        }
         public (int, int) getRowAndCol(Point position)
         {
             for (int i = 1; i <= 8; i++)
@@ -94,7 +112,7 @@ namespace ChessGUI.ViewModels
             }
             return (0, 0);
         }
-        public Point SnapToCenter(int r, int c)
+        private Point SnapToCenter(int r, int c)
         {
             return new Point(squareSize * r, squareSize * c);
         }

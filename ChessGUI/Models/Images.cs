@@ -22,6 +22,11 @@ namespace ChessGUI.Models
              //black pieces
              {Pieces.black| Pieces.pawn, loadFromSource("pack://application:,,,/Assets/black-pawn.png") },
              {Pieces.black| Pieces.knight, loadFromSource("pack://application:,,,/Assets/black-knight.png") },
+             {Pieces.black| Pieces.bishop, loadFromSource("pack://application:,,,/Assets/black-bishop.png") },
+             {Pieces.black| Pieces.rook, loadFromSource("pack://application:,,,/Assets/black-rook.png") },
+             {Pieces.black| Pieces.queen, loadFromSource("pack://application:,,,/Assets/black-king.png") },
+             {Pieces.black| Pieces.king, loadFromSource("pack://application:,,,/Assets/black-queen.png") },
+
         };
 
         public static ImageSource loadFromSource(string source)

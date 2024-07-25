@@ -7,10 +7,6 @@
              xmlns:viewmodels="clr-namespace:ChessGUI.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="500">
-    <UserControl.DataContext>
-        <viewmodels:ChessBoardViewModel />
-    </UserControl.DataContext>
-
     <UserControl.Resources>
         <SolidColorBrush x:Key="color1" Color="{Binding CellEvenColor}" />
         <SolidColorBrush x:Key="color2" Color="{Binding CellOddColor}" />

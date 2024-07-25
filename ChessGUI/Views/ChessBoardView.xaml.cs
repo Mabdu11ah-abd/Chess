@@ -33,6 +33,7 @@ namespace ChessGUI.Views
             double size = GameBoard.Width / 8;
             vm.SquareSize = size;
             DrawBoard();
+            drawImage();
         }
         //Create CheckerBoardPattern
         private void DrawBoard()
@@ -55,7 +56,6 @@ namespace ChessGUI.Views
                     }
                     else
                     {
-                        Debug.WriteLine(boardIndex);
                         GameBoard.Children.Add(new Border { Background = cellOdd });
                     }
                 }
@@ -65,7 +65,18 @@ namespace ChessGUI.Views
         //draw The Pieces at the start of the game
         private void drawImage()
         {
-
+            for(int  r = 0; r < 8;r++) 
+            {
+                for (global::System.Int32 c = 0; c < 8; c++)
+                {
+                    Image image = vm.setUpImage(c,r, out bool isPiece);
+                    if (isPiece)
+                    {
+                        Console.WriteLine("Adding image to the canvas");
+                        PieceCanvas.Children.Add(image);
+                    }
+                }
+            }
         }
         //manage left mouseEvents
         private void PieceCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

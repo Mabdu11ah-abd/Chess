@@ -8,5 +8,6 @@ namespace ChessGUI.Models
 {
     public class Move
     {
+        
     }
 }

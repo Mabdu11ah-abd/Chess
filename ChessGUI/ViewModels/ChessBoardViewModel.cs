@@ -18,17 +18,19 @@ namespace ChessGUI.ViewModels
 {
     
     public class ChessBoardViewModel : BaseViewModel
-    {
+    {   
+        // objects of the class
         private readonly GameState gamestate;
         private readonly Move move;
-        private readonly Board board;
+        private readonly Board board = new Board();
         private double pieceSize { get; set; }
-        public ManageMouse manageMouse=  new();
+
         //constructor
         public ChessBoardViewModel()
         {
             CellEvenColor = Colors.PeachPuff;
             CellOddColor = Colors.Red;
+            board.defaultStart();
         }
         public ChessBoardViewModel(int squareSize)
         {
@@ -51,17 +53,33 @@ namespace ChessGUI.ViewModels
         }
 
         private double squareSize;
-
         public double SquareSize
         {
             get { return squareSize; }
             set { squareSize = value; }
         }
+
+        public void onMouseDown(Point position, Image image)
+        {
+            ManageMouse.OnMouseDown(position, image);
+        }
+        public void onMouseUp(Point position)
+        {
+            (int, int) Coords = getRowAndCol(position);
+            Point point = SnapToCenter(Coords.Item2 - 1, Coords.Item1 - 1);
+
+            ManageMouse.onMouseUp(point);
+        }
+        public void onMouseMove(Point position)
+        {
+            ManageMouse.OnMouseMove(position);
+        }
+
         public (int, int) getRowAndCol(Point position)
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 1; i <= 8; i++)
             {
-                for (global::System.Int32 j = 0; j < 8; j++)
+                for (global::System.Int32 j = 1; j <= 8; j++)
                 {
                     double X = j * squareSize;
                     double Y = i * squareSize;
@@ -69,17 +87,16 @@ namespace ChessGUI.ViewModels
 
                     if (position.X < X && position.Y < Y)
                     {
+                        Debug.WriteLine(i + " " + j);
                         return (i, j);
                     }
                 }
             }
-            return (0,0);
+            return (0, 0);
         }
         public Point SnapToCenter(int r, int c)
         {
-            double Center = squareSize / 2;
-            
-            return new Point(Center * r, Center * c);
+            return new Point(squareSize * r, squareSize * c);
         }
     }
 }

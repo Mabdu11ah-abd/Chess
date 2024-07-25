@@ -4,40 +4,31 @@ using System.Windows.Controls;
 
 namespace ChessGUI.Models
 {
-    public class ManageMouse
+    public static class ManageMouse
     {
 
-        private Image draggedImage;
-        public Point mousePosition;
+        private static Image? draggedImage;
+        private static Point mousePosition;
 
-        public ManageMouse()
-        {
-        }
-
-        public void onMouseUp()
+        public static void onMouseUp(Point point)
         {
             if (draggedImage != null)
             {
-                (int, int) coords = getRowAndCol(mousePosition);
-
-                Debug.WriteLine(coords.ToString());
-                
-                Point point = SnapToCenter(coords.Item2 -1, coords.Item1 -1);
-
-                Debug.WriteLine(point.ToString());
-
+                //set the position of the image on the canvas
                 Canvas.SetLeft(draggedImage, point.X);
-                Canvas.SetTop(draggedImage, point.Y);
+                Canvas.SetTop(draggedImage, point.Y);   
+
+                //set the z index of the image 
                 Panel.SetZIndex(draggedImage, 1);
                 draggedImage = null;
             }
         }
-        public void OnMouseDown(Point position, Image image)
+        public static void OnMouseDown(Point position, Image image)
         {
             mousePosition = position;
             draggedImage = image;
         }
-        public void OnMouseMove(Point position)
+        public static void OnMouseMove(Point position)
         {
             if (draggedImage != null)
             {
@@ -46,33 +37,7 @@ namespace ChessGUI.Models
                 Canvas.SetLeft(draggedImage, Canvas.GetLeft(draggedImage) + offset.X);
                 Canvas.SetTop(draggedImage, Canvas.GetTop(draggedImage) + offset.Y);
             }
-        }
-        double squareSize = 62.5;
-        public (int, int) getRowAndCol(Point position)
-        {
-            for (int i = 1; i <= 8; i++)
-            {
-                for (global::System.Int32 j = 1; j <= 8; j++)
-                {
-                    double X = j * squareSize;
-                    double Y = i * squareSize;
-                    int squareNum = i * 8 + j;
-
-                    if (position.X < X && position.Y < Y)
-                    {
-                        Debug.WriteLine(i + " " + j);
-                        return (i, j);
-                    }
-                }
-            }
-            return (0, 0);
-        }
-        public Point SnapToCenter(int r, int c)
-        {
-            
-
-            return new Point(squareSize * r, squareSize * c);
-        }
+        }       
     }
 }
 

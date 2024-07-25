@@ -32,19 +32,9 @@ namespace ChessGUI.Views
             DataContext = vm;
             double size = GameBoard.Width / 8;
             vm.SquareSize = size;
-            Console.WriteLine(GameBoard.Width + "GameBoardWidth " + size);
-            var image = new Image();
-            image.Source = Images.getImage(9);
-            image.Height = size;
-            image.Width = size;
-            image.Stretch = Stretch.Uniform;
-            Canvas.SetLeft(image, 10);
-            Canvas.SetTop(image, 10);
-            PieceCanvas.Children.Add(image);
             DrawBoard();
-            
         }
-        //Create 
+        //Create CheckerBoardPattern
         private void DrawBoard()
         {
             var cellEven = this.Resources["color1"] as Brush;
@@ -71,6 +61,8 @@ namespace ChessGUI.Views
                 }
             }
         }
+
+        //draw The Pieces at the start of the game
         private void drawImage()
         {
 
@@ -79,21 +71,20 @@ namespace ChessGUI.Views
         private void PieceCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Point pos = e.GetPosition(PieceCanvas);
+            Image? image = e.Source as Image;
 
-            if (e.Source is Image image && PieceCanvas.CaptureMouse())
-                vm.manageMouse.OnMouseDown(pos, image);
+            if (image != null && PieceCanvas.CaptureMouse());
+            vm.onMouseDown(pos, image);
         }
 
         private void PieceCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            vm.manageMouse.OnMouseMove(e.GetPosition(PieceCanvas));
+            vm.onMouseMove(e.GetPosition(PieceCanvas));
         }
-
         private void PieceCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            (int, int) position = vm.getRowAndCol(e.GetPosition(PieceCanvas));
+            vm.onMouseUp(e.GetPosition(PieceCanvas));
             PieceCanvas.ReleaseMouseCapture();
-            vm.manageMouse.onMouseUp();
         }
 
         

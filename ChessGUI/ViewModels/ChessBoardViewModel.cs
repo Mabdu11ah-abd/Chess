@@ -20,23 +20,24 @@ namespace ChessGUI.ViewModels
     public class ChessBoardViewModel : BaseViewModel
     {   
         // objects of the class
-        private readonly GameState gamestate;
-        private readonly Move move;
+        private readonly GameState gamestate = new GameState();
+        private readonly MoveLogic logic = new MoveLogic();
         private readonly Board board = new();
         private double pieceSize { get; set; }
 
+        List<Move> moves = new List<Move>();
         //constructor
         public ChessBoardViewModel()
         {
             Console.WriteLine("view model constructor called");
-            CellEvenColor = Colors.PeachPuff;
-            CellOddColor = Colors.Red;
+            CellEvenColor = Colors.LimeGreen;
+            CellOddColor = Colors.WhiteSmoke;
             board.defaultStart();
         }
         public ChessBoardViewModel(int squareSize)
         {
-            CellEvenColor = Colors.PeachPuff;
-            CellOddColor = Colors.Red;
+            CellEvenColor = Colors.LightGreen;
+            CellOddColor = Colors.WhiteSmoke;
         }
         //binding properties 
         private Color cellEvenColor;
@@ -59,17 +60,42 @@ namespace ChessGUI.ViewModels
             get { return squareSize; }
             set { squareSize = value; }
         }
+        //makeMoveMethods
+        private void isMoveValid()
+        {
 
+        }
+        private void OnMoveMade()
+        {
+
+        }
+        private (int,int) StartPos { get; set; }
+        private (int,int) EndPos { get; set; }
+        //mouse methods
         public void onMouseDown(Point position, Image image)
         {
             ManageMouse.OnMouseDown(position, image);
+            StartPos = getRowAndCol(position);
+            moves = logic.generateMoves(board, gamestate.currentPlayer);
         }
         public void onMouseUp(Point position)
-        {
-            (int, int) Coords = getRowAndCol(position);
-            Point point = SnapToCenter(Coords.Item2 - 1, Coords.Item1 - 1);
+        {   
+            EndPos = getRowAndCol(position);
+            
+            //if move is legal 
+            if(true)
+            {
+                Point point = SnapToCenter(EndPos.Item2 - 1, EndPos.Item1 - 1);
+                ManageMouse.onMouseUp(point);
 
-            ManageMouse.onMouseUp(point);
+            }
+            else
+            {
+                Point point = SnapToCenter(StartPos.Item2 - 1, StartPos.Item1 - 1);
+                ManageMouse.onMouseUp(point);
+            }
+            //if move is illegal 
+
         }
         public void onMouseMove(Point position)
         {
@@ -88,11 +114,14 @@ namespace ChessGUI.ViewModels
             image.Width = squareSize;
             image.Height = squareSize;
             image.Stretch = Stretch.Uniform;
+
             Canvas.SetLeft(image, coords.X);
             Canvas.SetTop(image, coords.Y);
+
             isPiece = true;
             return image;
         }
+        //positioning methods
         public (int, int) getRowAndCol(Point position)
         {
             for (int i = 1; i <= 8; i++)

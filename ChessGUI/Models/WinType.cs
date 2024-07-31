@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ChessGUI.Models
 {
-    public class Move
+    public enum WinType
     {
-        
+        staleMate, checkMate, timeOut
     }
 }

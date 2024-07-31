@@ -24,7 +24,7 @@ namespace ChessGUI.Views
     /// </summary>
     public partial class ChessBoardView : UserControl
     {
-        
+
         ChessBoardViewModel vm = new();
         public ChessBoardView()
         {
@@ -65,14 +65,14 @@ namespace ChessGUI.Views
         //draw The Pieces at the start of the game
         private void drawImage()
         {
-            for(int  r = 0; r < 8;r++) 
+            PieceCanvas.Children.Clear();
+            for (int r = 0; r < 8; r++)
             {
                 for (global::System.Int32 c = 0; c < 8; c++)
                 {
-                    Image image = vm.setUpImage(c,r, out bool isPiece);
+                    Image image = vm.setUpImage(c, r, out bool isPiece);
                     if (isPiece)
                     {
-                        Console.WriteLine("Adding image to the canvas");
                         PieceCanvas.Children.Add(image);
                     }
                 }
@@ -84,7 +84,7 @@ namespace ChessGUI.Views
             Point pos = e.GetPosition(PieceCanvas);
             Image? image = e.Source as Image;
 
-            if (image != null && PieceCanvas.CaptureMouse());
+            if (image != null && PieceCanvas.CaptureMouse()) ;
             vm.onMouseDown(pos, image);
         }
 
@@ -96,9 +96,10 @@ namespace ChessGUI.Views
         {
             vm.onMouseUp(e.GetPosition(PieceCanvas));
             PieceCanvas.ReleaseMouseCapture();
+            drawImage();
         }
 
-        
+
     }
 
 }

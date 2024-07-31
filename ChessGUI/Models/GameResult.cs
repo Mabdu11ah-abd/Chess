@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace ChessGUI.Models
 {
-    internal class GamerResult
+    public class GameResult
     {
+        WinType WinType { get; set; }
+        Player Color { get; set; }
     }
 }

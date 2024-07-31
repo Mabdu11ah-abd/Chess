@@ -11,8 +11,8 @@ namespace ChessGUI.Models
     {
 
         public int[,] Squares = new int[8, 8];
-        private string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
-        
+        private string startingFEN = "8/8/8/8/2K5/8/8/8";
+
         private Dictionary<char, int> FenToPiece = new()
         {
             {'p', Pieces.black | Pieces.pawn},
@@ -37,14 +37,14 @@ namespace ChessGUI.Models
             int row = 0, col = 0;
             foreach (var character in FEN)
             {
-              if(character == '/')
+                if (character == '/')
                 {
                     col = 0;
                     row++;
                 }
-              else
+                else
                 {
-                    if(char.IsDigit(character))
+                    if (char.IsDigit(character))
                     {
                         col += (int)char.GetNumericValue(character);
                     }
@@ -55,7 +55,7 @@ namespace ChessGUI.Models
                     }
                 }
             }
-        }   
+        }
         public void defaultStart()
         {
             ReadFen(startingFEN);
@@ -64,10 +64,17 @@ namespace ChessGUI.Models
         {
 
         }
-        public void movePieceOnBoard(int r, int c)
+        public void movePieceOnBoard(Move move)
         {
-
+            
         }
-        
+        public int returnPiece((int, int) targetSquare)
+        {
+            return Squares[targetSquare.Item1, targetSquare.Item2];
+        }
+        public int returnPiece(int r, int c)
+        {
+            return Squares[r, c];
+        }
     }
 }

@@ -11,8 +11,10 @@ namespace ChessGUI.Models
     {
 
         public int[,] Squares = new int[8, 8];
-        private string startingFEN = "8/8/8/8/2K5/8/8/8";
-
+        private string startingFEN = "8/3r4/8/3R4/2K5/8/8/8";
+        private Move prevMove {get; set;}
+        private int prevTarget {get; set;}
+        private int preStart { get; set; }
         private Dictionary<char, int> FenToPiece = new()
         {
             {'p', Pieces.black | Pieces.pawn},
@@ -66,7 +68,35 @@ namespace ChessGUI.Models
         }
         public void movePieceOnBoard(Move move)
         {
-            
+            (int, int) Start = move.StartPosition;
+            (int, int) Target = move.TargetPosition;
+            prevMove = move;
+            prevTarget = returnPiece(Target);
+            preStart = returnPiece(Start);
+            Squares[Target.Item1, Target.Item2] = returnPiece(Start);
+            Squares[Start.Item1, Start.Item2] = 0;
+        }
+
+        public (int,int) returnKingSquare(bool isWhite)
+        {
+            int color = isWhite ? Pieces.white : Pieces.black;
+            for (int i = 0; i < 8; i++)
+            {
+                for (global::System.Int32 j = 0; j < 8; j++)
+                {
+                    if (Squares[i, j] == (color | Pieces.king))
+                        return (i, j);
+                }
+            }
+            return (-1, -1);
+        }
+        public void redoMove()
+        {
+            (int, int) Start = prevMove.StartPosition;
+            (int, int) Target = prevMove.TargetPosition;
+
+            Squares[Target.Item1, Target.Item2] = prevTarget;
+            Squares[Start.Item1, Start.Item2] = preStart;
         }
         public int returnPiece((int, int) targetSquare)
         {

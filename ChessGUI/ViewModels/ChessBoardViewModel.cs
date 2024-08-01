@@ -60,6 +60,14 @@ namespace ChessGUI.ViewModels
             get { return squareSize; }
             set { squareSize = value; }
         }
+        private ObservableList myVar;
+
+        public ObservableList MyProperty
+        {
+            get { return myVar; }
+            set { myVar = value; }
+        }
+
         //makeMoveMethods
         private void isMoveValid()
         {
@@ -76,14 +84,18 @@ namespace ChessGUI.ViewModels
         {
             ManageMouse.OnMouseDown(position, image);
             StartPos = getRowAndCol(position);
-            moves = logic.generateMoves(board, gamestate.currentPlayer);
         }
         public void onMouseUp(Point position)
         {   
             EndPos = getRowAndCol(position);
-            
+            Console.WriteLine("EndPOS ->{0}",EndPos);
+            Console.WriteLine("StartPOS ->{0}",StartPos);
+            board.movePieceOnBoard(new Move(StartPos, EndPos));
+            Console.WriteLine("Move Made in MouseUp");
+            moves = logic.returnLegalMoves(board, true);
+
             //if move is legal 
-            if(true)
+            if (true)
             {
                 Point point = SnapToCenter(EndPos.Item2 - 1, EndPos.Item1 - 1);
                 ManageMouse.onMouseUp(point);
@@ -106,7 +118,7 @@ namespace ChessGUI.ViewModels
             if (board.Squares[c, r] == 0)
             { 
                 isPiece = false;
-                return   null;
+                return null;
             }
             Point coords = SnapToCenter(r, c);
             Image image = new Image { Source = Images.getImage(board.Squares[c, r]) };
@@ -135,7 +147,7 @@ namespace ChessGUI.ViewModels
                     if (position.X < X && position.Y < Y)
                     {
                         Debug.WriteLine(i + " " + j);
-                        return (i, j);
+                        return (i-1, j-1);
                     }
                 }
             }

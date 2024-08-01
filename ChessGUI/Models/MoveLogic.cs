@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
@@ -11,8 +12,8 @@ namespace ChessGUI.Models
 
     public struct Move
     {
-        (int, int) StartPosition { get; set; }
-        (int, int) TargetPosition { get; set; }
+        public (int, int) StartPosition { get; set; }
+        public (int, int) TargetPosition { get; set; }
 
         public Move((int, int) startPosition, (int, int) targetPosition)
         {
@@ -63,13 +64,7 @@ namespace ChessGUI.Models
                     }
                 }
             }
-            int num = 0;
-            foreach (var move in moves)
-            {
-                num++;
-                Console.WriteLine(move.ToString());
-            }
-            Console.WriteLine(num);
+
             return moves;
         }
         private void generateSlidingMoves(int piece, (int, int) StartPosition, Board board)
@@ -78,26 +73,27 @@ namespace ChessGUI.Models
                 return;
 
             int startSquare = StartPosition.Item1 * 8 + StartPosition.Item2;
+            int limit = Pieces.isKing(piece) ? 1 : 8;
 
             for (int directionIndex = 0; directionIndex < 8; directionIndex++)
-            {
+            {   
+
                 //conditions for rooks and bishops
                 if (Pieces.isRook(piece) && directionIndex == 4) break;
                 if (Pieces.isBishop(piece) && directionIndex == 0) directionIndex += 4;
 
                 (int, int) targetSquare = StartPosition;
-                int limit = Pieces.isKing(piece) ? 1 : 8;
                 for (int n = 0; n < limit; n++)
                 {
+
                     //incrementing the value of target square by direction index
                     targetSquare.Item1 += direction.SlidingDirections[directionIndex].Item1;
                     targetSquare.Item2 += direction.SlidingDirections[directionIndex].Item2;
-
                     if (exceedsBoundaries(targetSquare))
                         break;
 
                     //if friendly piece encountered
-                    if (!Pieces.isFriendlyPiece(piece, board.returnPiece(targetSquare)))
+                    if (Pieces.isFriendlyPiece(piece, board.returnPiece(targetSquare)))
                         break;
 
                     //if enemy piece encountered
@@ -106,12 +102,13 @@ namespace ChessGUI.Models
                         moves.Add(new Move(StartPosition, targetSquare));
                         break;
                     }
+
                     //else add the move
                     moves.Add(new Move(StartPosition, targetSquare));
                 }
+
             }
         }
-
         private void generateKnightMoves(int piece, (int, int) StartPosition, Board board)
         {
             for (int directionIndex = 0; directionIndex < 8; directionIndex++)
@@ -135,10 +132,25 @@ namespace ChessGUI.Models
                 moves.Add(new Move(StartPosition, targetSquare));
             }
         }
-        public List<Move> returnLegalMoves()
+        public List<Move> returnLegalMoves(Board board, bool color)
         {
+            var pseudoLegalMoves = generateMoves(board, color);
+            var actualLegalMoves = new List<Move>();
+            foreach (var item in pseudoLegalMoves)
+            {
+                board.movePieceOnBoard(item);
+                var EnemyMoves = generateMoves(board, !color);
+                if(EnemyMoves.Any(response => response.TargetPosition == board.returnKingSquare(true)))
+                {
 
-            return null;
+                }
+                else
+                {
+                    actualLegalMoves.Add(item);
+                }
+                board.redoMove();
+            }
+            return actualLegalMoves;
         }
         private void generatePawnMoves(int piece, (int, int) StartPosition, Board board)
         {

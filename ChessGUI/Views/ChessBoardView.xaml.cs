@@ -84,7 +84,7 @@ namespace ChessGUI.Views
             Point pos = e.GetPosition(PieceCanvas);
             Image? image = e.Source as Image;
 
-            if (image != null && PieceCanvas.CaptureMouse()) ;
+            if (image != null && PieceCanvas.CaptureMouse());
             vm.onMouseDown(pos, image);
         }
 

@@ -24,20 +24,14 @@ namespace ChessGUI.Models
 
         public static bool isFriendlyPiece(int currPiece, int encounteredPiece)
         {
-            if (encounteredPiece == none) return true;
-            if (currPiece == none) return false;
-            if (currPiece > 16 && encounteredPiece > 16) return true;
-            if (currPiece < 16 && encounteredPiece < 16) return true;
+            if (currPiece == none || encounteredPiece == none) return false;
+            return (currPiece < black && encounteredPiece < black) || (currPiece >= black && encounteredPiece > black);
 
-            return false;
         }
         public static bool isEnemyPiece(int currPiece, int encounteredPiece)
         {
-            if (currPiece == none) return false;
-            if (currPiece > 16 && encounteredPiece < 16) return true;
-            if (currPiece < 16 && encounteredPiece > 16) return true;
-
-            return false;
+            if (currPiece == none || encounteredPiece == none) return false;
+            return (currPiece < black && encounteredPiece >= black) || (currPiece >= black && encounteredPiece < black);
         }
         public static bool isRook(int piece)
         {

@@ -4,19 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ChessGUI.Views"
-             xmlns:viewmodels="clr-namespace:ChessGUI.ViewModels"
+             xmlns:viewmodels="clr-namespace:ChessGUI.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ChessBoardViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="500">
     <UserControl.Resources>
         <SolidColorBrush x:Key="color1" Color="{Binding CellEvenColor}" />
         <SolidColorBrush x:Key="color2" Color="{Binding CellOddColor}" />
         <Image x:Key="size" Width="{Binding SquareSize}" Height="{Binding SquareSize}"/>
-        
+
     </UserControl.Resources>
     <Viewbox>
         <Grid>
-            <UniformGrid x:Name="GameBoard" Rows="8" Columns="8" AllowDrop="true" Height="500" Width="500">
-            </UniformGrid>
+            <ItemsControl ItemsSource="{Binding ColorCells}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="8" Columns="8" Height="500" Width="500" Background="Transparent"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    
+                    <DataTemplate>
+                        <Border Background="{Binding}"></Border>
+                    </DataTemplate>       
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             <Canvas x:Name="PieceCanvas" 
             MouseLeftButtonUp="PieceCanvas_MouseLeftButtonUp" 
             MouseMove="PieceCanvas_MouseMove"

@@ -25,6 +25,7 @@ namespace ChessGUI.Models
         //constructor
         public GameState()
         {
+            board.defaultStart();
             TurnsPassedSinceLastCapture = 0;
             currentPlayer = true;
             gameOver = false;
@@ -49,12 +50,15 @@ namespace ChessGUI.Models
 
             return true;
         }
-
+        public int ReturnBoardPiece(int r, int c)
+        {
+            return board.returnPiece(r, c);
+        }
         //public methods of the class
         public void MakeMove((int, int)StartSquare, (int, int)TargetSquare)
         {
             //if move is legal
-
+            
             //if move is not legal 
         }
 

@@ -2,6 +2,7 @@
 using ChessGUI.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.DirectoryServices.ActiveDirectory;
@@ -21,21 +22,20 @@ namespace ChessGUI.ViewModels
     {   
         // objects of the class
         private readonly GameState gamestate = new GameState();
-        private readonly MoveLogic logic = new MoveLogic();
-        private readonly Board board = new();
         private double pieceSize { get; set; }
 
         List<Move> moves = new List<Move>();
         //constructor
         public ChessBoardViewModel()
         {
-            Console.WriteLine("view model constructor called");
-            CellEvenColor = Colors.LimeGreen;
+            CellEvenColor = Colors.LightGreen;
             CellOddColor = Colors.WhiteSmoke;
-            board.defaultStart();
+            colorCells = new ObservableCollection<Brush>();
+            CheckerBoardPattern();
         }
-        public ChessBoardViewModel(int squareSize)
+        public ChessBoardViewModel(ObservableCollection<Brush> temp)
         {
+            colorCells = temp;
             CellEvenColor = Colors.LightGreen;
             CellOddColor = Colors.WhiteSmoke;
         }
@@ -53,21 +53,31 @@ namespace ChessGUI.ViewModels
             get { return cellOddColor; }
             set { cellOddColor = value; OnPropertyChanged(); }
         }
-
+        private ObservableCollection<Brush> colorCells;
+        public ObservableCollection<Brush> ColorCells
+        {
+            get { return colorCells;}
+            set { colorCells = value; OnPropertyChanged(); }
+        }
         private double squareSize;
         public double SquareSize
         {
             get { return squareSize; }
             set { squareSize = value; }
         }
-        private ObservableList myVar;
-
-        public ObservableList MyProperty
+    
+        public void CheckerBoardPattern()
         {
-            get { return myVar; }
-            set { myVar = value; }
+            ColorCells.Clear();
+            for (int r = 0; r < 8; r++)
+            {
+                for (global::System.Int32 c = 0; c < 8; c++)
+                {
+                    ColorCells.Add(((r + c) % 2 == 0) ? Brushes.White : Brushes.Black);
+                }
+            }
+                    Console.WriteLine(ColorCells);
         }
-
         //makeMoveMethods
         private void isMoveValid()
         {
@@ -87,13 +97,8 @@ namespace ChessGUI.ViewModels
         }
         public void onMouseUp(Point position)
         {   
-            EndPos = getRowAndCol(position);
-            Console.WriteLine("EndPOS ->{0}",EndPos);
-            Console.WriteLine("StartPOS ->{0}",StartPos);
-            board.movePieceOnBoard(new Move(StartPos, EndPos));
-            Console.WriteLine("Move Made in MouseUp");
-            moves = logic.returnLegalMoves(board, true);
 
+            EndPos = getRowAndCol(position);
             //if move is legal 
             if (true)
             {
@@ -115,13 +120,13 @@ namespace ChessGUI.ViewModels
         }
         public Image setUpImage(int r, int c, out bool isPiece)
         {
-            if (board.Squares[c, r] == 0)
+            if (gamestate.ReturnBoardPiece(c,r) == 0)
             { 
                 isPiece = false;
                 return null;
             }
             Point coords = SnapToCenter(r, c);
-            Image image = new Image { Source = Images.getImage(board.Squares[c, r]) };
+            Image image = new Image { Source = Images.getImage(gamestate.ReturnBoardPiece(c, r))};
 
             image.Width = squareSize;
             image.Height = squareSize;

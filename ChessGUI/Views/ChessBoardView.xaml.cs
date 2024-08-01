@@ -2,6 +2,7 @@
 using ChessGUI.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -25,43 +26,16 @@ namespace ChessGUI.Views
     public partial class ChessBoardView : UserControl
     {
 
-        ChessBoardViewModel vm = new();
+        ChessBoardViewModel vm = new ChessBoardViewModel();
         public ChessBoardView()
         {
             InitializeComponent();
             DataContext = vm;
-            double size = GameBoard.Width / 8;
-            vm.SquareSize = size;
-            DrawBoard();
+            vm.SquareSize = 500/8;
             drawImage();
         }
         //Create CheckerBoardPattern
-        private void DrawBoard()
-        {
-            var cellEven = this.Resources["color1"] as Brush;
-            var cellOdd = this.Resources["color2"] as Brush;
-
-            for (int i = 0; i < 8; i++)
-            {
-                for (global::System.Int32 j = 0; j < 8; j++)
-                {
-                    int boardIndex = i * 8 + j;
-
-                    if (i % 2 == 0)
-                        boardIndex++;
-
-                    if (boardIndex % 2 == 0)
-                    {
-                        GameBoard.Children.Add(new Border { Background = cellEven });
-                    }
-                    else
-                    {
-                        GameBoard.Children.Add(new Border { Background = cellOdd });
-                    }
-                }
-            }
-        }
-
+        
         //draw The Pieces at the start of the game
         private void drawImage()
         {

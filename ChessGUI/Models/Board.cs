@@ -11,7 +11,7 @@ namespace ChessGUI.Models
     {
 
         public int[,] Squares = new int[8, 8];
-        private string startingFEN = "8/3r4/8/3R4/2K5/8/8/8";
+        private string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         private Move prevMove {get; set;}
         private int prevTarget {get; set;}
         private int preStart { get; set; }
@@ -98,6 +98,7 @@ namespace ChessGUI.Models
             Squares[Target.Item1, Target.Item2] = prevTarget;
             Squares[Start.Item1, Start.Item2] = preStart;
         }
+        
         public int returnPiece((int, int) targetSquare)
         {
             return Squares[targetSquare.Item1, targetSquare.Item2];

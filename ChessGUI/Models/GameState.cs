@@ -10,17 +10,16 @@ namespace ChessGUI.Models
     public class GameState
     {
         //private attributes of the class
-        private readonly MoveLogic move = new MoveLogic();
-        private readonly Board board = new Board();
+        private readonly MoveLogic logic = new MoveLogic();
         private readonly bool gameOver;
-        
-        public  bool currentPlayer; // true for white, false for black
         private int TurnsPassedSinceLastCapture { get; set; }
+        private bool currentPlayer { get; set; }// true for white, false for black
+        private Board board = new Board();
         //action delegates
 
-        public event Action<int, int> DisplayMove;
+        public event Action DisplayMove;
         public event Action<GameResult> GameEnded;
-        public event Action GameRestarted;
+        public event Action GameStarted;
         
         //constructor
         public GameState()
@@ -30,39 +29,52 @@ namespace ChessGUI.Models
             currentPlayer = true;
             gameOver = false;
         }
-        
-        
-        
-        //private methods of the class
-        private void doesMoveEndGame()
+        private void isCheckMate()
         {
 
         }
+        //private methods of the class
+        private void DoesMoveEndGame()
+        {
 
+        }
         private void switchPlayer()
         {
-
+            currentPlayer = !currentPlayer;
         }
-        private bool checkTurnsPassed() //returns true if the game is a draw due to 50 move rule
+        private bool checkTurnsPassed(bool gameEnded) //returns true if the game is a draw due to 50 move rule
         {
-
-
-
-            return true;
+            if(TurnsPassedSinceLastCapture > 50) 
+            {
+                return true;
+            }
+            return false;
         }
+
+        //public methods of the class
         public int ReturnBoardPiece(int r, int c)
         {
             return board.returnPiece(r, c);
         }
-        //public methods of the class
-        public void MakeMove((int, int)StartSquare, (int, int)TargetSquare)
+
+        public void MakeMove(Move move)
         {
-            //if move is legal
-            
-            //if move is not legal 
+            List<Move> moveList = logic.returnLegalMoves(board, currentPlayer);
+
+            //check for gameOver
+            DoesMoveEndGame();
+
+
+            if (moveList.Contains(move)) //if move is legal
+            {
+                board.movePieceOnBoard(move);
+                DisplayMove?.Invoke();
+                switchPlayer();
+            }
+            else
+            {
+                Console.WriteLine("Move Was Not legal");
+            }
         }
-
-
-
     }
 }

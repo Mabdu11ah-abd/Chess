@@ -8,10 +8,7 @@
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="500">
     <UserControl.Resources>
-        <SolidColorBrush x:Key="color1" Color="{Binding CellEvenColor}" />
-        <SolidColorBrush x:Key="color2" Color="{Binding CellOddColor}" />
         <Image x:Key="size" Width="{Binding SquareSize}" Height="{Binding SquareSize}"/>
-
     </UserControl.Resources>
     <Viewbox>
         <Grid>

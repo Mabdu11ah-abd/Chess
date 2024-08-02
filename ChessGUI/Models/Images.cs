@@ -24,8 +24,8 @@ namespace ChessGUI.Models
              {Pieces.black| Pieces.knight, loadFromSource("pack://application:,,,/Assets/black-knight.png") },
              {Pieces.black| Pieces.bishop, loadFromSource("pack://application:,,,/Assets/black-bishop.png") },
              {Pieces.black| Pieces.rook, loadFromSource("pack://application:,,,/Assets/black-rook.png") },
-             {Pieces.black| Pieces.queen, loadFromSource("pack://application:,,,/Assets/black-king.png") },
-             {Pieces.black| Pieces.king, loadFromSource("pack://application:,,,/Assets/black-queen.png") },
+             {Pieces.black| Pieces.queen, loadFromSource("pack://application:,,,/Assets/black-queen.png") },
+             {Pieces.black| Pieces.king, loadFromSource("pack://application:,,,/Assets/black-king.png") },
 
         };
 
@@ -33,7 +33,7 @@ namespace ChessGUI.Models
         {
             return new BitmapImage(new Uri(source, UriKind.Absolute));
         }
-        
+
         public static ImageSource getImage(int key)
         {
             return pieceSources[key];

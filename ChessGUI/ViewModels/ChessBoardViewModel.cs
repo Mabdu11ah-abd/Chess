@@ -23,15 +23,15 @@ namespace ChessGUI.ViewModels
         // objects of the class
         private readonly GameState gamestate = new GameState();
         private double pieceSize { get; set; }
-
-        List<Move> moves = new List<Move>();
         //constructor
         public ChessBoardViewModel()
         {
-            CellEvenColor = Colors.LightGreen;
-            CellOddColor = Colors.WhiteSmoke;
             colorCells = new ObservableCollection<Brush>();
             CheckerBoardPattern();
+
+            gamestate.DisplayMove += OnMoveMade;
+            gamestate.GameStarted += OnGameStart;
+
         }
         public ChessBoardViewModel(ObservableCollection<Brush> temp)
         {
@@ -65,7 +65,6 @@ namespace ChessGUI.ViewModels
             get { return squareSize; }
             set { squareSize = value; }
         }
-    
         public void CheckerBoardPattern()
         {
             ColorCells.Clear();
@@ -73,17 +72,13 @@ namespace ChessGUI.ViewModels
             {
                 for (global::System.Int32 c = 0; c < 8; c++)
                 {
-                    ColorCells.Add(((r + c) % 2 == 0) ? Brushes.White : Brushes.Black);
+                    ColorCells.Add(((r + c) % 2 == 0) ? Brushes.White : Brushes.LightGreen);
                 }
             }
                     Console.WriteLine(ColorCells);
         }
         //makeMoveMethods
-        private void isMoveValid()
-        {
-
-        }
-        private void OnMoveMade()
+        private void OnGameStart()
         {
 
         }
@@ -95,24 +90,20 @@ namespace ChessGUI.ViewModels
             ManageMouse.OnMouseDown(position, image);
             StartPos = getRowAndCol(position);
         }
+        private void OnMoveMade()
+        {
+
+        }
         public void onMouseUp(Point position)
         {   
 
             EndPos = getRowAndCol(position);
+            Move move = new Move(StartPos, EndPos);
+            gamestate.MakeMove(move);
+            
             //if move is legal 
-            if (true)
-            {
-                Point point = SnapToCenter(EndPos.Item2 - 1, EndPos.Item1 - 1);
-                ManageMouse.onMouseUp(point);
-
-            }
-            else
-            {
-                Point point = SnapToCenter(StartPos.Item2 - 1, StartPos.Item1 - 1);
-                ManageMouse.onMouseUp(point);
-            }
-            //if move is illegal 
-
+            Point point = SnapToCenter(EndPos.Item2 - 1, EndPos.Item1 - 1);
+            ManageMouse.onMouseUp(point);
         }
         public void onMouseMove(Point position)
         {

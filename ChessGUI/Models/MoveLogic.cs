@@ -2,44 +2,114 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Eventing.Reader;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ChessGUI.Models
 {
-        
+
     public struct Move
-    {   
-        public (int, int) StartPosition { get; set; }
-        public (int, int) TargetPosition { get; set; }
+    {
+        public (int, int) StartPosition;
+        public (int, int) TargetPosition;
 
         public Move((int, int) startPosition, (int, int) targetPosition)
         {
             StartPosition = startPosition;
             TargetPosition = targetPosition;
         }
+        public override bool Equals(object obj)
+        {
+            if (obj is Move otherMove)
+            {
+                return StartPosition == otherMove.StartPosition && TargetPosition == otherMove.TargetPosition;
+            }
+            return false;
+        }
         public override string ToString()
         {
             return StartPosition.ToString() + TargetPosition.ToString();
         }
-    }   
-        
+    }
+
     public class MoveLogic
-    {   
-        private bool LongCastlePossible { get; set; }
-        private bool ShortCastlePossible { get; set; }
-        private readonly Direction direction = new();
-        private List<Move> moves;
-        private bool enPassantPossible { get; set; }
-        
-        public MoveLogic ()
+    {
+        public bool BlackCastled = false;
+        public bool WhiteCastled = false;
+        private bool HasCastled(bool white)
         {
-            LongCastlePossible = false;
-            ShortCastlePossible = false;
+            if (white && !WhiteCastled)
+            {
+                return false;
+            }
+            if (!white && !BlackCastled)
+            {
+                return false;
+            }
+            return true;
+        }
+        public void markCastled(bool white)
+        {
+            if (white)
+            {
+                WhiteCastled = true;
+            }
+            else
+                BlackCastled = true;
         }
 
+        private readonly Direction direction = new();
+
+        //private bools for castling pieces moved
+        public bool WhiteQueenRookMoved = false;
+        public bool WhiteKingRookMoved = false;
+        public bool WhiteKingMoved = false;
+
+        public bool BlackKingMoved = false;
+        public bool BlackQueenRookMoved = false;
+        public bool BlackKingRookMoved = false;
+        //methods to check if castling is possible
+        private bool CheckLongCastlePossibility(bool white)
+        {
+            if (white)
+            {
+                if (!(WhiteQueenRookMoved && WhiteKingMoved))
+                    return true;
+            }
+            else
+            {
+                if (!(BlackKingMoved && BlackQueenRookMoved))
+                    return true;
+            }
+            return false;
+        }
+        private bool CheckShortCastlePossibility(bool white)
+        {
+            if (white)
+            {
+                if (!(WhiteKingRookMoved || WhiteKingMoved))
+                    return true;
+            }
+            else
+            {
+                if (!(BlackKingMoved || BlackKingRookMoved))
+                    return true;
+            }
+            return false;
+        }
+        //logic for generating moves 
+        private List<Move> moves;
+        public bool enPassantPossible = false;
+        public MoveLogic()
+        {
+            WhiteCastled = false;
+            BlackCastled = false;
+            WhiteKingMoved = false;
+        }
         public List<Move> generateMoves(Board board, bool ColorToMove)
         {
             moves = new List<Move>();
@@ -49,7 +119,7 @@ namespace ChessGUI.Models
                 {
                     int piece = board.returnPiece(r, c);
                     bool Color = FindPieceColor(piece);
-        
+
                     if (Color == ColorToMove)
                     {
                         (int, int) startPosition = (r, c);
@@ -63,8 +133,8 @@ namespace ChessGUI.Models
                         //generate sliding piece moves
                         if (Pieces.isSliding(piece))
                         {
-                            
-                            generateSlidingMoves(piece, startPosition, board);
+
+                            generateSlidingMoves(piece, startPosition, board, ColorToMove);
                         }
                         //generate PawnMoves
                         if (Pieces.isPawn(piece))
@@ -76,10 +146,8 @@ namespace ChessGUI.Models
             }
             return moves;
         }
-        private void generateSlidingMoves(int piece, (int, int) StartPosition, Board board)
+        private void generateSlidingMoves(int piece, (int, int) StartPosition, Board board, bool white)
         {
-           
-
             int startSquare = StartPosition.Item1 * 8 + StartPosition.Item2;
             int limit = Pieces.isKing(piece) ? 1 : 8;
 
@@ -113,6 +181,44 @@ namespace ChessGUI.Models
                     moves.Add(new Move(StartPosition, targetSquare));
                 }
             }
+
+            // Logic for Castling
+            if (limit == 1 && !HasCastled(white))
+            {
+                (int, int) TargetSquare = StartPosition;
+                //long Castle to the right
+                bool NoObstructionRight = true;
+                for (int i = 1; i <= 2; i++)
+                {
+                    TargetSquare = (StartPosition.Item1, StartPosition.Item2 + i);
+                    if (!exceedsBoundaries(TargetSquare))
+                        if (Pieces.isFriendlyPiece(piece, board.returnPiece(TargetSquare)) || Pieces.isEnemyPiece(piece, board.returnPiece(TargetSquare)))
+                        {
+                            NoObstructionRight = false;
+                            break;
+                        }
+                }
+                if (NoObstructionRight)
+                    moves.Add(new Move(StartPosition, (StartPosition.Item1, StartPosition.Item2 + 2)));
+
+                //long Castle to the left
+                TargetSquare = StartPosition;
+                bool NoObstructionLeft = true;
+                for (int i = 1; i <= 2; i++)
+                {
+                    TargetSquare = (StartPosition.Item1, StartPosition.Item2 - i);
+                    if (!exceedsBoundaries(TargetSquare))
+                        if (Pieces.isFriendlyPiece(piece, board.returnPiece(TargetSquare)) || Pieces.isEnemyPiece(piece, board.returnPiece(TargetSquare)))
+                        {
+                            NoObstructionLeft = false;
+                            break;
+                        }
+                }
+                if (NoObstructionLeft)
+                    moves.Add(new Move(StartPosition, (StartPosition.Item1, StartPosition.Item2 - 2)));
+            }
+
+
         }
         private void generateKnightMoves(int piece, (int, int) StartPosition, Board board)
         {
@@ -208,14 +314,35 @@ namespace ChessGUI.Models
             {
                 board.movePieceOnBoard(item);
                 var EnemyMoves = generateMoves(board, !color);
-                if (EnemyMoves.Any(response => response.TargetPosition == board.returnKingSquare(true)))
+                if (EnemyMoves.Any(response => response.TargetPosition == board.returnKingSquare(color)))
                 {
+
                 }
                 else
                 {
                     actualLegalMoves.Add(item);
                 }
                 board.redoMove();
+            }
+            //logic to verify castling
+
+            var kingStartPosition = board.returnKingSquare(color);
+            var kingLeftMove = new Move(kingStartPosition, (kingStartPosition.Item1, kingStartPosition.Item2 - 1));
+            var kingRightMove = new Move(kingStartPosition, (kingStartPosition.Item1, kingStartPosition.Item2 + 1));
+            if (!actualLegalMoves.Any(m => m.Equals(kingLeftMove)))
+            {
+                var CastleTarget = (kingStartPosition.Item1, kingStartPosition.Item2 - 2);
+                var castlingMove = new Move(kingStartPosition, CastleTarget);
+                actualLegalMoves.Remove(castlingMove);
+            }
+
+            if (!actualLegalMoves.Any(m => m.Equals(kingLeftMove)))
+            {
+
+                var CastleTarget = kingRightMove.TargetPosition;
+                CastleTarget.Item2 += 2;
+                actualLegalMoves.Remove(new Move(kingStartPosition, CastleTarget));
+
             }
             return actualLegalMoves;
         }
@@ -231,28 +358,42 @@ namespace ChessGUI.Models
             return piece < 16 ? true : false;
         }
 
-
-
-        public void castleLong(Board board, bool white)
+        public bool castleLong(Board board, bool white)
         {
-            if(LongCastlePossible)
+            if (CheckLongCastlePossibility(white))
             {
                 (int, int) RookSquare;
                 RookSquare.Item1 = white ? 7 : 0;
                 RookSquare.Item2 = 0;
+                Console.WriteLine(RookSquare);
                 (int, int) KingSquare = board.returnKingSquare(white);
+                (int, int) TargetSquare = KingSquare;
+                TargetSquare.Item2 -= 2;
+                board.movePieceOnBoard(new Move(KingSquare, TargetSquare));
+                KingSquare.Item2 += 1;
+                TargetSquare.Item2 = 3;
+                board.movePieceOnBoard(new Move(RookSquare, TargetSquare));
+                return true;
+            }
+            return false;
+        }
+        public bool castleShort(Board board, bool white)
+        {
+            if (CheckShortCastlePossibility(white))
+            {
+                (int, int) RookSquare;
+                RookSquare.Item1 = white ? 7 : 0;
+                RookSquare.Item2 = 7;
+                (int, int) KingSquare = board.returnKingSquare(white);
+
                 (int, int) TargetSquare = KingSquare;
                 TargetSquare.Item2 += 2;
                 board.movePieceOnBoard(new Move(KingSquare, TargetSquare));
-                KingSquare.Item2 -= 1;
-                TargetSquare = KingSquare;
-                board.movePieceOnBoard(new Move(KingSquare, TargetSquare));
-
+                TargetSquare.Item2 = 5;
+                board.movePieceOnBoard(new Move(RookSquare, TargetSquare));
+                return true;
             }
-        }
-        private void castleShort()
-        {
-
+            return false;
         }
     }
 

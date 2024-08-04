@@ -11,7 +11,7 @@ namespace ChessGUI.Models
     {
 
         public int[,] Squares = new int[8, 8];
-        private string startingFEN = "rnbqkbnr/ppp1pppp/8/8/8/8/PPP1PPPP/R3K2R";
+        private string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR";
         private Move prevMove {get; set;}
         private int prevTarget {get; set;}
         private int preStart { get; set; }
@@ -35,7 +35,6 @@ namespace ChessGUI.Models
 
         public void ReadFen(string FEN)
         {
-            Console.WriteLine("Reading FEN");
             int row = 0, col = 0;
             foreach (var character in FEN)
             {
@@ -102,6 +101,10 @@ namespace ChessGUI.Models
         public int returnPiece((int, int) targetSquare)
         {
             return Squares[targetSquare.Item1, targetSquare.Item2];
+        }
+        public void setPieceZero((int, int) target)
+        {
+            Squares[target.Item1, target.Item2] = 0;
         }
         public int returnPiece(int r, int c)
         {

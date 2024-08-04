@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace ChessGUI.Models
         //private attributes of the class
         private readonly MoveLogic logic = new MoveLogic();
         private readonly bool gameOver;
-        private int TurnsPassedSinceLastCapture { get; set; }
+        private int TurnsPassedSinceLastCapture;
         private bool currentPlayer { get; set; }// true for white, false for black
         private Board board = new Board();
         private bool WhiteKingInCheck;
@@ -41,23 +42,51 @@ namespace ChessGUI.Models
         //private methods of the class
         private void DoesMoveEndGame()
         {
-            List<Move> moveList = logic.returnLegalMoves(board, !currentPlayer);
-            if (!moveList.Any()) 
+            if(TurnsPassedSinceLastCapture == 50)
             {
-                if(!currentPlayer  && WhiteKingInCheck) 
+                Console.WriteLine("Game drew by 50 move rule");
+            }
+            List<Move> moveList = logic.returnLegalMoves(board, !currentPlayer);
+            if (!moveList.Any())
+            {
+                if (!currentPlayer && WhiteKingInCheck)
                 {
                     Console.WriteLine("Black wins by checkMate");
                 }
-                else if(currentPlayer && BlackKingInCheck)
+                else if (currentPlayer && BlackKingInCheck)
                 {
                     Console.WriteLine("White wins by checkmate");
                 }
                 else
-                {       
+                {
                     Console.WriteLine("Game Ended in a draw");
                 }
 
             }
+        }
+        private void DeesMoveEnableEnPassant(Move move)
+        {
+            logic.enPassantPossible = false;
+            if (Pieces.isPawn(board.returnPiece(move.TargetPosition)) )
+            {
+                if (move.TargetPosition.Item1 == (move.StartPosition.Item1 + 2) ||
+            move.TargetPosition.Item1 == (move.StartPosition.Item1 - 2))
+                {
+                    Console.WriteLine("set true");
+                    logic.enPassantPossible = true;
+                    logic.PrevPawnMovedFinalPosition = move.TargetPosition;
+                    return;
+                }
+            }
+            logic.EnpassantMoves.Clear();
+        }
+        private void MoveWasCapture(Move move)
+        {
+            if(board.returnPiece(move.TargetPosition) != 0)
+            {
+                TurnsPassedSinceLastCapture = 0;
+            }
+            TurnsPassedSinceLastCapture++;
         }
         private void switchPlayer()
         {
@@ -147,15 +176,20 @@ namespace ChessGUI.Models
                         WhiteKingInCheck = false;
                     else
                         BlackKingInCheck = false;
-
                     board.movePieceOnBoard(move);
+                    //check for enpassant move
+                    if(logic.EnpassantMoves.Contains(move))
+                    {
+                        board.setPieceZero(logic.PrevPawnMovedFinalPosition);
+                    }
                     DisplayMove?.Invoke();
                 }
                 isMoved(move);
+                DeesMoveEnableEnPassant(move);
+                MoveWasCapture(move);
             }
             else
             {
-                Console.WriteLine("Move Was Not legal");
             }
 
             moveList = logic.generateMoves(board, currentPlayer);

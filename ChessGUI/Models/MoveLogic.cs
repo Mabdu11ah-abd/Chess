@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -73,6 +74,7 @@ namespace ChessGUI.Models
         public bool BlackQueenRookMoved = false;
         public bool BlackKingRookMoved = false;
         //methods to check if castling is possible
+        public (int, int) PrevPawnMovedFinalPosition { get; set; }
         private bool CheckLongCastlePossibility(bool white)
         {
             if (white)
@@ -103,12 +105,16 @@ namespace ChessGUI.Models
         }
         //logic for generating moves 
         private List<Move> moves;
+        public List<Move> EnpassantMoves;
+        public List<Move> CheckThreefoldRepitition;
         public bool enPassantPossible = false;
         public MoveLogic()
         {
             WhiteCastled = false;
             BlackCastled = false;
             WhiteKingMoved = false;
+            PrevPawnMovedFinalPosition = (-1, -1);
+            EnpassantMoves = new();
         }
         public List<Move> generateMoves(Board board, bool ColorToMove)
         {
@@ -240,6 +246,7 @@ namespace ChessGUI.Models
         }
         private void generatePawnMoves(int piece, (int, int) StartPosition, Board board)
         {
+
             int directionIndex = 0;
             if (piece > 16)
                 directionIndex += 3;
@@ -252,33 +259,26 @@ namespace ChessGUI.Models
                 moves.Add(new Move(StartPosition, targetSquareofRegularMove));
 
             //enPassant enPassant possible is true and enemy piece located on left or right then capture 
-            if (enPassantPossible && directionIndex == 0 || directionIndex == 3)
+            if (enPassantPossible)
             {
-                (int, int) EnPassantTarget = StartPosition;
-                EnPassantTarget.Item1++; //move to east 
-
-                //If east then add 
-                if (Pieces.isEnemyPiece(piece, board.returnPiece(EnPassantTarget)) &&
-                    Pieces.isPawn(board.returnPiece(EnPassantTarget)))
+                bool EnPassantPawn = false;
+                var newTarget = StartPosition;
+                newTarget.Item2++;
+                if (newTarget == PrevPawnMovedFinalPosition)
+                    EnPassantPawn = true;
+                newTarget.Item2 -= 2;
+                if (newTarget == PrevPawnMovedFinalPosition)
+                    EnPassantPawn = true;
+                
+                if (EnPassantPawn)
                 {
-                    (int, int) targetSquare = StartPosition;
-
-                    targetSquare.Item2 += direction.PawnDirections[directionIndex + 1].Item2;
-                    if (!exceedsBoundaries(targetSquare))
-                        moves.Add(new Move(StartPosition, targetSquare));
+                    newTarget= PrevPawnMovedFinalPosition;
+                    newTarget.Item1 += (piece > 16) ? 1 : -1;
+                    var tempMove = new Move(StartPosition, newTarget);
+                    moves.Add(tempMove);
+                    EnpassantMoves.Add(tempMove);
                 }
-                //if west then add
-                if (Pieces.isEnemyPiece(piece, board.returnPiece(EnPassantTarget)) &&
-                    Pieces.isPawn(board.returnPiece(EnPassantTarget)))
-                {
-                    (int, int) targetSquare = StartPosition;
-                    targetSquare.Item2 += direction.PawnDirections[directionIndex + 2].Item2;
-                    if (!exceedsBoundaries(targetSquare))
-                        moves.Add(new Move(StartPosition, targetSquare));
-                }
-                enPassantPossible = false;
             }
-
             //located on 2nd and 7th rank
             if (StartPosition.Item1 == 1 || StartPosition.Item1 == 6)
             {

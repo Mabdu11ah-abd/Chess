@@ -75,7 +75,6 @@ namespace ChessGUI.ViewModels
                     ColorCells.Add(((r + c) % 2 == 0) ? Brushes.White : Brushes.LightGreen);
                 }
             }
-                    Console.WriteLine(ColorCells);
         }
         //makeMoveMethods
         private void OnGameStart()
@@ -142,7 +141,6 @@ namespace ChessGUI.ViewModels
 
                     if (position.X < X && position.Y < Y)
                     {
-                        Debug.WriteLine(i + " " + j);
                         return (i-1, j-1);
                     }
                 }

@@ -142,7 +142,10 @@ namespace ChessGUI.Models
         {
             return board.returnPiece(r, c);
         }
-
+        public List<Move> ReturnCurrentLegalMoves()
+        {
+            return logic.returnLegalMoves(board, currentPlayer);
+        }
         public void MakeMove(Move move)
         {
             List<Move> moveList = logic.returnLegalMoves(board, currentPlayer);
@@ -187,6 +190,8 @@ namespace ChessGUI.Models
                 isMoved(move);
                 DeesMoveEnableEnPassant(move);
                 MoveWasCapture(move);
+                switchPlayer();
+
             }
             else
             {
@@ -204,7 +209,6 @@ namespace ChessGUI.Models
                     WhiteKingInCheck = true;
             }
             DoesMoveEndGame();
-            switchPlayer();
         }
     }
 }

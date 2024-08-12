@@ -255,7 +255,7 @@ namespace ChessGUI.Models
             (int, int) targetSquareofRegularMove = StartPosition;
 
             targetSquareofRegularMove.Item1 += direction.PawnDirections[directionIndex].Item1;
-            if (!exceedsBoundaries(targetSquareofRegularMove))
+            if (!exceedsBoundaries(targetSquareofRegularMove) && !Pieces.isEnemyPiece(piece, board.returnPiece(targetSquareofRegularMove)))
                 moves.Add(new Move(StartPosition, targetSquareofRegularMove));
 
             //enPassant enPassant possible is true and enemy piece located on left or right then capture 

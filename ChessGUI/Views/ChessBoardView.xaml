@@ -8,6 +8,7 @@
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="500">
     <UserControl.Resources>
+        
         <Image x:Key="size" Width="{Binding SquareSize}" Height="{Binding SquareSize}"/>
     </UserControl.Resources>
     <Viewbox>
@@ -19,10 +20,10 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    
+
                     <DataTemplate>
                         <Border Background="{Binding}"></Border>
-                    </DataTemplate>       
+                    </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <Canvas x:Name="PieceCanvas" 

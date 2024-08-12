@@ -11,7 +11,7 @@ namespace ChessGUI.Models
     {
 
         public int[,] Squares = new int[8, 8];
-        private string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR";
+        private string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         private Move prevMove {get; set;}
         private int prevTarget {get; set;}
         private int preStart { get; set; }

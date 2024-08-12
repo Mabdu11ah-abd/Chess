@@ -1,4 +1,5 @@
-﻿using ChessGUI.Models;
+﻿
+using ChessGUI.Models;
 using ChessGUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -31,11 +32,12 @@ namespace ChessGUI.Views
         {
             InitializeComponent();
             DataContext = vm;
-            vm.SquareSize = 500/8;
+
+            vm.SquareSize = 500 / 8;
             drawImage();
         }
         //Create CheckerBoardPattern
-        
+
         //draw The Pieces at the start of the game
         private void drawImage()
         {
@@ -58,7 +60,7 @@ namespace ChessGUI.Views
             Point pos = e.GetPosition(PieceCanvas);
             Image? image = e.Source as Image;
 
-            if (image != null && PieceCanvas.CaptureMouse());
+            if (image != null && PieceCanvas.CaptureMouse()) ;
             vm.onMouseDown(pos, image);
         }
 

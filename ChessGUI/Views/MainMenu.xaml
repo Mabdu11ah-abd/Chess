@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="ChessGUI.Views.MainMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ChessGUI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="DarkOliveGreen"/>
+            <Setter Property="Background" Value="Beige"/>
+            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+    </UserControl.Resources>
+    <Viewbox>
+        
+        <Grid Background="Black">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MaxWidth="150" MinWidth="50"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Rectangle Fill="RosyBrown"/>
+        <Grid Grid.Column ="0">
+            <Button Width="100" Height="50" VerticalAlignment="Top" Margin="10" FontSize="20"> 
+                account
+            </Button>
+            <Button Width="100" Height="50" VerticalAlignment="Bottom" Margin="10" FontSize="20">
+                customse
+            </Button>
+
+        </Grid>
+        <Grid Grid.Column="1"  Background="AntiqueWhite">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel x:Name="Panel1" Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" Margin="20">
+                <Button x:Name="Play_Against_AI" Height="140" Width="175" Margin="10" Content="Play VS AI" />
+                <Button x:Name="Stats" Height="140" Width="175" Margin="10" Content="Play Online"/>
+            </StackPanel>
+
+            <StackPanel x:Name="Panel2" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center"
+                    HorizontalAlignment="Center" Margin="20">
+                <Button x:Name="Online" Height="140" Width="175" Margin="10" Content="Stats"/>
+                <Button x:Name="Rules" Height="140" Width="175" Margin="10" Content="Rules"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+    </Viewbox>
+
+</UserControl>

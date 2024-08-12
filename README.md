@@ -1,13 +1,12 @@
 # Chess Game Project
 
 ## Overview
-Welcome to the Chess Game Project! This project aims to create a fully functional chess game with a range of features including player management, game storage, online multiplayer functionality, and AI integration using StockFish.
+Welcome to the Chess Game Project! This project aims to create a fully functional chess game with a range of features including player management, game storage, and AI integration using StockFish. The focus of this project was to develp[
 
 ## Features (Not Complete Yet)
 - **Functioning Chess Game**: Play chess with all standard rules and pieces.
 - **Player Management**: Maintain a database to manage player profiles and statistics.
 - **Game Storage**: Store game histories in a database for future reference and analysis.
-- **Online Multiplayer**: Play against other players online with real-time updates.
 - **StockFish AI**: Challenge yourself against the powerful StockFish chess engine.
 
 ## Technology Stack

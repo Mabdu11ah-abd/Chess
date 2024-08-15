@@ -12,13 +12,13 @@ namespace ChessGUI.Models
     {
         //private attributes of the class
         private readonly MoveLogic logic = new MoveLogic();
-        private readonly bool gameOver;
+        private  bool gameOver;
         private int TurnsPassedSinceLastCapture;
         private bool currentPlayer { get; set; }// true for white, false for black
         private Board board = new Board();
         private bool WhiteKingInCheck;
         private bool BlackKingInCheck;
-
+        private Dictionary<Position, int> positions= new();
         //action delegates
 
         public event Action DisplayMove;
@@ -28,6 +28,7 @@ namespace ChessGUI.Models
         //constructor
         public GameState()
         {
+            positions = new();
             board.defaultStart();
             TurnsPassedSinceLastCapture = 0;
             currentPlayer = true;
@@ -42,6 +43,10 @@ namespace ChessGUI.Models
         //private methods of the class
         private void DoesMoveEndGame()
         {
+            if(gameOver == true)
+            {
+                Console.WriteLine("Game drew By repetition");
+            }
             if(TurnsPassedSinceLastCapture == 50)
             {
                 Console.WriteLine("Game drew by 50 move rule");
@@ -94,7 +99,7 @@ namespace ChessGUI.Models
         }
         private bool checkTurnsPassed(bool gameEnded) //returns true if the game is a draw due to 50 move rule
         {
-            if (TurnsPassedSinceLastCapture > 50)
+            if (TurnsPassedSinceLastCapture > 100)
             {
                 return true;
             }
@@ -136,6 +141,21 @@ namespace ChessGUI.Models
                 //White King moved
             }
 
+        }
+        private void AddPosition(int count)
+        {
+            Position newPos = new Position(count, board.returnFEN());
+            if (positions.ContainsKey(newPos))
+            {
+                positions[newPos]++;
+                if (positions[newPos] == 3)
+                {
+                    gameOver = true;
+                }
+            }
+           
+            else
+                positions.Add(newPos, 1);
         }
         //public methods of the class
         public int ReturnBoardPiece(int r, int c)
@@ -192,6 +212,7 @@ namespace ChessGUI.Models
                 MoveWasCapture(move);
                 switchPlayer();
 
+
             }
             else
             {
@@ -208,6 +229,8 @@ namespace ChessGUI.Models
                 else
                     WhiteKingInCheck = true;
             }
+            moveList = logic.returnLegalMoves(board, currentPlayer);
+            AddPosition(moveList.Count);
             DoesMoveEndGame();
         }
     }

@@ -1,14 +1,12 @@
 # Chess Game Project
 
 ## Overview
-Welcome to the Chess Game Project! This project aims to create a fully functional chess game with a range of features including player management, game storage, and AI integration using StockFish. The focus of this project was to develp[
+Welcome to the Chess Game Project! This project aims to create a fully functional chess game where players can drag and drop chess pieces and legal moves are displayed. The project is currently unfinished i plan on adding stockfish and menus for restarting the game later on that are currently not in place.
 
 ## Features (Not Complete Yet)
 - **Functioning Chess Game**: Play chess with all standard rules and pieces.
-- **Player Management**: Maintain a database to manage player profiles and statistics.
-- **Game Storage**: Store game histories in a database for future reference and analysis.
-- **StockFish AI**: Challenge yourself against the powerful StockFish chess engine.
-
+  **Legal moves highlighted**
+  
 ## Technology Stack
 - **Language**: C#
 - **Framework**: .NET
